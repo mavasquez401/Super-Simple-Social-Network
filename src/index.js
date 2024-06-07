@@ -41,21 +41,21 @@ app.post('/register', (req, res) => {
     });
 });
 
-app.get('/login', (req, res) => {
-    const { username, password, email } = req.body;
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
 
-    db.query("SELECT * FROM users WHERE username = ? AND password = ?", [username, password], (err, result) => {
+    db.query("SELECT * FROM Users WHERE username = ? AND password = ?", [username, password], (err, result) => {
         if (err) {
-            res.send({err : err});
-        } 
-        
-        if (results) {
-            res.send(results)
+            console.error(err);
+            res.status(500).send("Error logging in");
+        } else if (result.length > 0) {
+            res.status(200).send("Login successful");
         } else {
-            res.send({message : "Wrong username/password "})
-            }
+            res.status(401).send("Invalid credentials");
+        }
     });
-})
+});
+
 // Start server
 app.listen(3000, () => {
     console.log("Running server on port 3000");

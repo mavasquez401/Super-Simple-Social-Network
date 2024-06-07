@@ -29,6 +29,9 @@ function App() {
       })
       .then((response) => {
         console.log(response);
+      })
+      .catch((error) => {
+        console.error("There was an error logging in!", error);
       });
   };
   return (
@@ -73,7 +76,7 @@ function App() {
           <label>Password: </label>
           <input
             type="password"
-            placeholder="Username..."
+            placeholder="Password..."
             onChange={(e) => {
               setPassword(e.target.value);
             }}
