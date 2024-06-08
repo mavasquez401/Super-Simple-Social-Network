@@ -1,5 +1,11 @@
-import { useState } from "react";
-import axios, { Axios } from "axios";
+import { useEffect, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import axios from "axios";
 
 function App() {
   // keys
@@ -12,7 +18,11 @@ function App() {
 
   const [loginMessage, setLoginMessage] = useState("");
 
-  const [loginStatus, setLoginStatus] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState(null);
+
+  const [posts, setPosts] = useState([]);
+  const [newPostContent, setNewPostContent] = useState("");
 
   // register api
   const register = () => {
@@ -36,81 +46,181 @@ function App() {
       })
       .then((response) => {
         console.log(response);
+        setIsLoggedIn(true);
         setLoginMessage("Login successful");
+        setUserId(response.data.user_id);
+        setUsername(response.data.username);
       })
       .catch((error) => {
         if (error.response) {
           if (error.response.status === 401) {
-            setLoginMessage("Invalid login information");
+            setLoginMessage("Invalid credentials");
           } else {
             setLoginMessage("Error logging in");
           }
         } else {
-          console.error(
-            "There was an error logging in!, try again later",
-            error
-          );
+          console.error("There was an error logging in!", error);
           setLoginMessage("Error logging in");
         }
       });
   };
 
-  //internal html
-  return (
-    <>
-      <div className="App">
-        {/* creates register portion */}
-        <div className="Registration">
-          <h1>Registration</h1>
-          <label>Username: </label>
-          <input
-            type="text"
-            onChange={(e) => {
-              setUsernameReg(e.target.value);
-            }}
-          />
-          <label>Password: </label>
-          <input
-            type="password"
-            onChange={(e) => {
-              setPasswordReg(e.target.value);
-            }}
-          />
-          <label>Email: </label>
-          <input
-            type="text"
-            onChange={(e) => {
-              setEmailReg(e.target.value);
-            }}
-          />
-          <button onClick={register}>Register</button>
-        </div>
+  // Logout api
+  const logout = () => {
+    axios
+      .post("http://localhost:3000/logout", {
+        username: username,
+      })
+      .then((response) => {
+        console.log(response);
+        setIsLoggedIn(false);
+        setLoginMessage("Logout successful");
+      })
+      .catch((error) => {
+        console.error("There was an error logging out!", error);
+        setLoginMessage("Error logging out");
+      });
+  };
 
-        {/* creates login portion */}
-        <div className="login">
-          <h1>Login</h1>
-          <label>Username: </label>
-          <input
-            type="text"
-            placeholder="Username..."
-            onChange={(e) => {
-              setUsername(e.target.value);
-            }}
-          />
-          <label>Password: </label>
-          <input
-            type="password"
-            placeholder="Password..."
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-          <button onClick={login}>Login</button>
-          {loginMessage && <p>{loginMessage}</p>}
-        </div>
-        <h1>{loginStatus}</h1>
-      </div>
-    </>
+  // gets the post from logged in user
+  const createPost = () => {
+    axios
+      .post("http://localhost:3000/posts", {
+        user_id: userId,
+        content: newPostContent,
+      })
+      .then((response) => {
+        console.log(response);
+        setNewPostContent(""); // Clear the text box after submission
+        fetchPosts(); // Refresh the posts
+      })
+      .catch((error) => {
+        console.error("There was an error creating the post!", error);
+      });
+  };
+
+  const fetchPosts = () => {
+    axios
+      .get("http://localhost:3000/posts")
+      .then((response) => {
+        setPosts(response.data);
+      })
+      .catch((error) => {
+        console.error("There was an error fetching posts!", error);
+      });
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchPosts();
+    }
+  }, [isLoggedIn]);
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route
+          path="/login"
+          element={
+            isLoggedIn ? (
+              <Navigate to="/welcome" />
+            ) : (
+              <div className="login">
+                <h1>Login</h1>
+                <label>Username: </label>
+                <input
+                  type="text"
+                  placeholder="Username..."
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                  }}
+                />
+                <label>Password: </label>
+                <input
+                  type="password"
+                  placeholder="Password..."
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                />
+                <button onClick={login}>Login</button>
+                {loginMessage && <p>{loginMessage}</p>}
+                <p>
+                  Don't have an account? <a href="/register">Register here</a>
+                </p>
+              </div>
+            )
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <div className="registration">
+              <h1>Registration</h1>
+              <label>Username: </label>
+              <input
+                type="text"
+                onChange={(e) => {
+                  setUsernameReg(e.target.value);
+                }}
+              />
+              <label>Email: </label>
+              <input
+                type="email"
+                onChange={(e) => {
+                  setEmailReg(e.target.value);
+                }}
+              />
+              <label>Password: </label>
+              <input
+                type="password"
+                onChange={(e) => {
+                  setPasswordReg(e.target.value);
+                }}
+              />
+              <button onClick={register}>Register</button>
+            </div>
+          }
+        />
+        <Route
+          path="/welcome"
+          element={
+            isLoggedIn ? (
+              <div className="welcome">
+                <h1>Welcome, {username}!</h1>
+                <button onClick={logout}>Logout</button>
+                {loginMessage && <p>{loginMessage}</p>}
+                <div className="create-post">
+                  <h2>Create a New Post</h2>
+                  <textarea
+                    value={newPostContent}
+                    onChange={(e) => setNewPostContent(e.target.value)}
+                    placeholder="What's on your mind?"></textarea>
+                  <button onClick={createPost}>Post</button>
+                </div>
+                <div className="posts">
+                  <h2>Posts</h2>
+                  {posts.map((post) => (
+                    <div key={post.post_id} className="post">
+                      <p>
+                        <strong>{post.username}</strong>
+                      </p>
+                      <p>{post.content}</p>
+                      <p>
+                        <em>{new Date(post.timestamp).toLocaleString()}</em>
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
