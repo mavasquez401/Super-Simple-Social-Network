@@ -65,6 +65,20 @@ app.post('/login', (req, res) => {
     });
 });
 
+// Logout function
+app.post('/logout', (req, res) => {
+    const { username } = req.body;
+
+    db.query("UPDATE Users SET is_logged_in = FALSE WHERE username = ?", [username], (err, result) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send("Error logging out");
+        } else {
+            res.status(200).send("Logout successful");
+        }
+    });
+});
+
 // Start server
 app.listen(3000, () => {
     console.log("Running server on port 3000");

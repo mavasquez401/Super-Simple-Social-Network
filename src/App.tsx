@@ -10,6 +10,10 @@ function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [loginMessage, setLoginMessage] = useState("");
+
+  const [loginStatus, setLoginStatus] = useState("");
+
   // register api
   const register = () => {
     axios
@@ -32,9 +36,22 @@ function App() {
       })
       .then((response) => {
         console.log(response);
+        setLoginMessage("Login successful");
       })
       .catch((error) => {
-        console.error("There was an error logging in!", error);
+        if (error.response) {
+          if (error.response.status === 401) {
+            setLoginMessage("Invalid login information");
+          } else {
+            setLoginMessage("Error logging in");
+          }
+        } else {
+          console.error(
+            "There was an error logging in!, try again later",
+            error
+          );
+          setLoginMessage("Error logging in");
+        }
       });
   };
 
@@ -89,7 +106,9 @@ function App() {
             }}
           />
           <button onClick={login}>Login</button>
+          {loginMessage && <p>{loginMessage}</p>}
         </div>
+        <h1>{loginStatus}</h1>
       </div>
     </>
   );
