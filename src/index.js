@@ -19,6 +19,7 @@ const db = createConnection({
     database: "superSimpleSocialNetwork"
 });
 
+// established connection with db
 db.connect((err) => {
     if (err) {
         console.error('Error connecting to the database:', err);
@@ -28,10 +29,14 @@ db.connect((err) => {
 });
 
 // Routes
+// register user function interact with db
 app.post('/register', (req, res) => {
     const { username, password, email } = req.body;
 
+    // interacts with db to add username password and email
     db.query("INSERT INTO Users (username, password, email) VALUES (?,?,?)", [username, password, email], (err, result) => {
+       
+        // check if user was created 
         if (err) {
             console.error(err);
             res.status(500).send("Error registering user");
@@ -41,10 +46,14 @@ app.post('/register', (req, res) => {
     });
 });
 
+// login function that interacts with db
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
+    // checks if username and password exist in db
     db.query("SELECT * FROM Users WHERE username = ? AND password = ?", [username, password], (err, result) => {
+        
+        // if statements to check if login success or not
         if (err) {
             console.error(err);
             res.status(500).send("Error logging in");

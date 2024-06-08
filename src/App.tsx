@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios, { Axios } from "axios";
 
 function App() {
+  // keys
   const [UsernameReg, setUsernameReg] = useState("");
   const [PasswordReg, setPasswordReg] = useState("");
   const [EmailReg, setEmailReg] = useState("");
@@ -9,6 +10,7 @@ function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  // register api
   const register = () => {
     axios
       .post("http://localhost:3000/register", {
@@ -21,6 +23,7 @@ function App() {
       });
   };
 
+  // login api
   const login = () => {
     axios
       .post("http://localhost:3000/login", {
@@ -34,9 +37,12 @@ function App() {
         console.error("There was an error logging in!", error);
       });
   };
+
+  //internal html
   return (
     <>
       <div className="App">
+        {/* creates register portion */}
         <div className="Registration">
           <h1>Registration</h1>
           <label>Username: </label>
@@ -63,6 +69,7 @@ function App() {
           <button onClick={register}>Register</button>
         </div>
 
+        {/* creates login portion */}
         <div className="login">
           <h1>Login</h1>
           <label>Username: </label>
