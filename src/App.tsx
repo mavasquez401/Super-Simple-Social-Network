@@ -99,6 +99,7 @@ function App() {
       });
   };
 
+  // gets posts from from previous entries
   const fetchPosts = () => {
     axios
       .get("http://localhost:3000/posts")
@@ -110,6 +111,7 @@ function App() {
       });
   };
 
+  // is used to make sure that only if user is logged in it will fetchpost
   useEffect(() => {
     if (isLoggedIn) {
       fetchPosts();
