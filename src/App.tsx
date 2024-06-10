@@ -6,6 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import axios from "axios";
+import "./App.css";
 
 function App() {
   // keys
@@ -120,108 +121,116 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route
-          path="/login"
-          element={
-            isLoggedIn ? (
-              <Navigate to="/welcome" />
-            ) : (
-              <div className="login">
-                <h1>Login</h1>
+      <header>
+        <h1>Social Network</h1>
+        {isLoggedIn && (
+          <button className="logout-button" onClick={logout}>
+            Logout
+          </button>
+        )}
+      </header>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route
+            path="/login"
+            element={
+              isLoggedIn ? (
+                <Navigate to="/welcome" />
+              ) : (
+                <div className="login">
+                  <h1>Login</h1>
+                  <label>Username: </label>
+                  <input
+                    type="text"
+                    placeholder="Username..."
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                    }}
+                  />
+                  <label>Password: </label>
+                  <input
+                    type="password"
+                    placeholder="Password..."
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
+                  />
+                  <button onClick={login}>Login</button>
+                  {loginMessage && <p>{loginMessage}</p>}
+                  <p>
+                    Don't have an account? <a href="/register">Register here</a>
+                  </p>
+                </div>
+              )
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <div className="registration">
+                <h1>Registration</h1>
                 <label>Username: </label>
                 <input
                   type="text"
-                  placeholder="Username..."
                   onChange={(e) => {
-                    setUsername(e.target.value);
+                    setUsernameReg(e.target.value);
+                  }}
+                />
+                <label>Email: </label>
+                <input
+                  type="email"
+                  onChange={(e) => {
+                    setEmailReg(e.target.value);
                   }}
                 />
                 <label>Password: </label>
                 <input
                   type="password"
-                  placeholder="Password..."
                   onChange={(e) => {
-                    setPassword(e.target.value);
+                    setPasswordReg(e.target.value);
                   }}
                 />
-                <button onClick={login}>Login</button>
-                {loginMessage && <p>{loginMessage}</p>}
-                <p>
-                  Don't have an account? <a href="/register">Register here</a>
-                </p>
+                <button onClick={register}>Register</button>
               </div>
-            )
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <div className="registration">
-              <h1>Registration</h1>
-              <label>Username: </label>
-              <input
-                type="text"
-                onChange={(e) => {
-                  setUsernameReg(e.target.value);
-                }}
-              />
-              <label>Email: </label>
-              <input
-                type="email"
-                onChange={(e) => {
-                  setEmailReg(e.target.value);
-                }}
-              />
-              <label>Password: </label>
-              <input
-                type="password"
-                onChange={(e) => {
-                  setPasswordReg(e.target.value);
-                }}
-              />
-              <button onClick={register}>Register</button>
-            </div>
-          }
-        />
-        <Route
-          path="/welcome"
-          element={
-            isLoggedIn ? (
-              <div className="welcome">
-                <h1>Welcome, {username}!</h1>
-                <button onClick={logout}>Logout</button>
-                {loginMessage && <p>{loginMessage}</p>}
-                <div className="create-post">
-                  <h2>Create a New Post</h2>
-                  <textarea
-                    value={newPostContent}
-                    onChange={(e) => setNewPostContent(e.target.value)}
-                    placeholder="What's on your mind?"></textarea>
-                  <button onClick={createPost}>Post</button>
+            }
+          />
+          <Route
+            path="/welcome"
+            element={
+              isLoggedIn ? (
+                <div className="welcome">
+                  <h1>Welcome, {username}!</h1>
+                  <div className="create-post">
+                    <h2>Create a New Post</h2>
+                    <textarea
+                      value={newPostContent}
+                      onChange={(e) => setNewPostContent(e.target.value)}
+                      placeholder="What's on your mind?"></textarea>
+                    <button onClick={createPost}>Post</button>
+                  </div>
+                  <div className="posts">
+                    <h2>Posts</h2>
+                    {posts.map((post) => (
+                      <div key={post.post_id} className="post">
+                        <p>
+                          <strong>{post.username}</strong>
+                        </p>
+                        <p>{post.content}</p>
+                        <p>
+                          <em>{new Date(post.timestamp).toLocaleString()}</em>
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="posts">
-                  <h2>Posts</h2>
-                  {posts.map((post) => (
-                    <div key={post.post_id} className="post">
-                      <p>
-                        <strong>{post.username}</strong>
-                      </p>
-                      <p>{post.content}</p>
-                      <p>
-                        <em>{new Date(post.timestamp).toLocaleString()}</em>
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-      </Routes>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+        </Routes>
+      </div>
     </Router>
   );
 }
