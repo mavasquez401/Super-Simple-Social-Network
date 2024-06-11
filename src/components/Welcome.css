@@ -1,6 +1,6 @@
 .welcome {
     padding: 20px;
-    overflow: auto; /* Ensure overflow is enabled */
+    overflow: auto;
   }
   
   .create-post {
@@ -18,4 +18,36 @@
     border-radius: 5px;
     background-color: #f9f9f9;
   }
+  
+  .reactions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .reactions button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .reactions button:first-child {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .reactions button:first-child:hover {
+    background-color: #45a049;
+  }
+  
+  .reactions button:last-child {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .reactions button:last-child:hover {
+    background-color: #e41e26;
+  }
+  
   
