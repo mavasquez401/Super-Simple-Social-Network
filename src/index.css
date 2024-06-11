@@ -1,0 +1,13 @@
+/* in index.css or a global CSS file */
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+  }
+  
+  body {
+    display: flex;
+    flex-direction: column;
+  }

@@ -1,0 +1,21 @@
+.welcome {
+    padding: 20px;
+    overflow: auto; /* Ensure overflow is enabled */
+  }
+  
+  .create-post {
+    margin-bottom: 20px;
+  }
+  
+  .posts {
+    margin-top: 20px;
+  }
+  
+  .post {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  

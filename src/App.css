@@ -1,15 +1,20 @@
 /* General Styles */
-body {
+html, body {
   font-family: Arial, sans-serif;
   background-color: #f0f2f5;
   margin: 0;
   padding: 0;
   color: #333;
+  height: 100%; /* Ensure html and body take full height */
+  overflow: hidden; /* Hide overflow on body */
+}
+
+body {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start; /* Ensure items are aligned to the start */
   align-items: center;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh; /* Ensure body takes at least full height */
 }
 
 .App {
@@ -22,6 +27,9 @@ body {
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px; /* Add some margin to the top */
+  overflow: auto; /* Ensure the app can scroll */
+  flex-grow: 1; /* Allow App to grow and take available space */
 }
 
 h1 {
@@ -38,6 +46,8 @@ header {
   justify-content: center;
   align-items: center;
   position: relative;
+  z-index: 10; /* Ensure header is on top */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow to differentiate */
 }
 
 header h1 {
@@ -46,11 +56,13 @@ header h1 {
 }
 
 .logout-button {
-  position: absolute;
+  margin-left: auto;
+  position: right;
+  width: 60px;
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
-  background-color: #4a2371;
+  background-color: #170529;
   color: white;
   padding: 10px;
   border: none;
@@ -131,7 +143,7 @@ button:hover {
 }
 
 .create-post textarea {
-  width: 100%;
+  width: 90%;
   height: 100px;
   padding: 10px;
   margin: 10px 0;
