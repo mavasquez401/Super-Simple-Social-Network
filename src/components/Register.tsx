@@ -1,31 +1,39 @@
-import { useState } from "react";
-import axios from "axios";
+import React from 'react';
 
-function Register() {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
+interface RegisterProps {
+  onRegister: () => Promise<void>;
+  setRegistrationData: React.Dispatch<
+    React.SetStateAction<{
+      username: string;
+      password: string;
+      email: string;
+    }>
+  >;
+}
 
-  const register = () => {
-    axios
-      .post("http://localhost:3000/register", { username, password, email })
-      .then((response) => {
-        console.log(response);
-      });
+const Register: React.FC<RegisterProps> = ({
+  onRegister,
+  setRegistrationData,
+}) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRegistrationData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   return (
     <div className="registration">
       <h1>Registration</h1>
       <label>Username: </label>
-      <input type="text" onChange={(e) => setUsername(e.target.value)} />
+      <input name="username" type="text" onChange={handleInputChange} />
       <label>Email: </label>
-      <input type="email" onChange={(e) => setEmail(e.target.value)} />
+      <input name="email" type="email" onChange={handleInputChange} />
       <label>Password: </label>
-      <input type="password" onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={register}>Register</button>
+      <input name="password" type="password" onChange={handleInputChange} />
+      <button onClick={onRegister}>Register</button>
     </div>
   );
-}
+};
 
 export default Register;
